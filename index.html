@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>認定日本語教育機関 Q&A検索</title>
+  <style>
+    body { font-family: sans-serif; margin: 2rem; background-color: #fdfdfd; }
+    input { padding: 0.5rem; width: 80%; }
+    button { padding: 0.5rem 1rem; margin-left: 0.5rem; }
+    .qa { margin: 1rem 0; padding: 1rem; border-left: 4px solid #007acc; background: #f0f8ff; }
+    .qa h3 { margin: 0; color: #007acc; }
+    .qa p { margin: 0.5rem 0 0; }
+  </style>
+</head>
+<body>
+  <h1>認定Q&A検索</h1>
+  <input type="text" id="searchInput" placeholder="キーワードを入力してください…" />
+  <button onclick="searchQA()">検索</button>
+  <div id="results"></div>
+
+  <script>
+    let qaData = [];
+
+    fetch("qa-data.json")
+      .then(response => response.json())
+      .then(data => {
+        qaData = data;
+        console.log("データを読み込みました。件数:", qaData.length);
+      })
+      .catch(err => {
+        console.error("JSONファイルの読み込みに失敗しました", err);
+      });
+
+    function searchQA() {
+      const keyword = document.getElementById("searchInput").value.trim();
+      const resultsDiv = document.getElementById("results");
+      resultsDiv.innerHTML = "";
+
+      if (!keyword) return;
+
+      const filtered = qaData.filter(item =>
+        item.question.includes(keyword) || item.answers[0].text.includes(keyword)
+      );
+
+      if (filtered.length === 0) {
+        resultsDiv.innerHTML = "<p>該当するQ&Aが見つかりませんでした。</p>";
+        return;
+      }
+
+      filtered.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "qa";
+        div.innerHTML = `<h3>Q. ${item.question}</h3><p><strong>A.</strong> ${item.answers[0].text}</p>`;
+        resultsDiv.appendChild(div);
+      });
+    }
+  </script>
+</body>
+</html>
