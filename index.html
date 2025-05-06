@@ -108,7 +108,7 @@
 
   <script>
     let qaData = [];
-
+  
     fetch("qa-data.json")
       .then((res) => res.json())
       .then((data) => {
@@ -118,36 +118,38 @@
         document.getElementById("results").innerText = "JSONファイルの読み込みに失敗しました";
         console.error(err);
       });
-
+  
     function searchQA() {
       const query = document.getElementById("queryInput").value.trim();
       const resultsContainer = document.getElementById("results");
       resultsContainer.innerHTML = "";
-
+  
       if (!query) {
         resultsContainer.innerText = "質問を入力してください。";
         return;
       }
-
+  
       const results = qaData.filter((item) =>
         item.question.includes(query)
       );
-
+  
       if (results.length === 0) {
         resultsContainer.innerText = "一致する質問が見つかりませんでした。";
         return;
       }
-
+  
       results.forEach((item) => {
         const card = document.createElement("div");
         card.className = "qa-card";
         card.innerHTML = `
           <div class="question">Q：${item.question}</div>
           <div class="answer">A：${item.answers[0].text}</div>
+          <div class="source">
+            出典：<a href="${item.source_url}" target="_blank" rel="noopener noreferrer">${item.source_title}</a>
+          </div>
         `;
         resultsContainer.appendChild(card);
       });
     }
-  </script>
 </body>
 </html>
