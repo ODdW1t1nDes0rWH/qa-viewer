@@ -36,11 +36,12 @@
       font-size: 1rem;
       outline: none;
     }
+
     input[type="text"],
     button {
-    box-sizing: border-box;
+      box-sizing: border-box;
     }
-  
+
     button {
       padding: 0.9em 1.2em;
       border: none;
@@ -84,24 +85,24 @@
       white-space: pre-wrap;
     }
 
-   @media (max-width: 600px) {
-  #searchBox {
-    flex-direction: column;
-    gap: 0.5rem; /* 上下に自然な余白 */
-    align-items: stretch;
-  }
+    @media (max-width: 600px) {
+      #searchBox {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: stretch;
+      }
 
-  input[type="text"],
-  button {
-    width: 100%;
-    border-radius: 6px; /* 全体に角丸 */
-    font-size: 1rem;
-  }
+      input[type="text"],
+      button {
+        width: 100%;
+        border-radius: 6px;
+        font-size: 1rem;
+      }
 
-  button {
-    margin-top: 0;
-  }
-}
+      button {
+        margin-top: 0;
+      }
+    }
   </style>
 </head>
 <body>
@@ -114,7 +115,7 @@
 
   <script>
     let qaData = [];
-  
+
     fetch("qa-data.json")
       .then((res) => res.json())
       .then((data) => {
@@ -124,26 +125,26 @@
         document.getElementById("results").innerText = "JSONファイルの読み込みに失敗しました";
         console.error(err);
       });
-  
+
     function searchQA() {
       const query = document.getElementById("queryInput").value.trim();
       const resultsContainer = document.getElementById("results");
       resultsContainer.innerHTML = "";
-  
+
       if (!query) {
         resultsContainer.innerText = "質問を入力してください。";
         return;
       }
-  
+
       const results = qaData.filter((item) =>
         item.question.includes(query)
       );
-  
+
       if (results.length === 0) {
         resultsContainer.innerText = "一致する質問が見つかりませんでした。";
         return;
       }
-  
+
       results.forEach((item) => {
         const card = document.createElement("div");
         card.className = "qa-card";
@@ -157,6 +158,14 @@
         resultsContainer.appendChild(card);
       });
     }
+
+    // ✅ Enterキーで検索を実行するイベントを追加
+    document.getElementById("queryInput").addEventListener("keypress", function(event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        searchQA();
+      }
+    });
   </script>
 </body>
 </html>
